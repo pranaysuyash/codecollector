@@ -29,4 +29,10 @@ def collect_code(root_dir, output_file):
                     print(f"Error reading file {file_path}: {e}")
 
 if __name__ == '__main__':
-    collect_code('.', 'collected_code.txt')
+    directory = input("Enter the path of the folder to traverse: ")
+    if not os.path.isdir(directory):
+        print(f"The directory '{directory}' does not exist.")
+    else:
+        output_file = 'collected_code.txt'
+        collect_code(directory, output_file)
+        print(f"Collected code has been written to '{output_file}'.")
