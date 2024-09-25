@@ -2,7 +2,7 @@
 
 This tool traverses directories or clones GitHub repositories to collect and analyze code files. It offers features like secret detection, code metrics extraction, linting, formatting, and minification. All operations are performed on in-memory copies to ensure original files remain unaltered.
 
-**Author:** Your Name  
+**Author:** Pranay Suyash
 **License:** MIT
 
 ---
