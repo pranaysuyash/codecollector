@@ -456,4 +456,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 The Comprehensive Code Collector CLI Tool is a versatile utility for developers, security analysts, and anyone needing to analyze codebases. By providing a rich set of features and customization options, it helps in identifying potential issues, enforcing code quality, and generating comprehensive reports.
 
----
+## New Feature: GUI Folder Selection
+
+In addition to the command-line arguments, this version includes a GUI-based folder selection option. If no directory is specified in the command-line arguments, a GUI window will prompt you to select the desired folder.
+
+### How to Use the GUI Feature
+1. Run the script without specifying the directory argument:
+
+   ```bash
+   python codecv3.py
+   ```
+
+2. A folder selection dialog will appear. Choose the folder you want to analyze.
+
+3. The rest of the options (e.g., removing comments, minification, output format) can still be used as command-line arguments.
+
+### Example
+```bash
+python codecv3.py --remove-comments --output collected_code_gui
+```
+
+This command will open a GUI dialog to select the folder and generate the output with comments removed.
+

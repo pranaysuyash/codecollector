@@ -28,6 +28,8 @@ from git import Repo
 from radon.complexity import cc_visit
 from radon.metrics import mi_visit
 from radon.raw import analyze as radon_raw_analyze
+import tkinter as tk
+from tkinter import filedialog
 
 # Initialize logging
 logger = logging.getLogger(__name__)
@@ -38,11 +40,11 @@ PROGRAMMING_EXTENSIONS = [
     '.py', '.ipynb', '.js', '.jsx', '.ts', '.tsx', '.html', '.css', '.java', '.c', '.cpp', '.h',
     '.cs', '.rb', '.php', '.go', '.rs', '.swift', '.kt', '.scala', '.pl', '.lua', '.r', '.sql',
     '.sh', '.bat', '.m', '.vb', '.erl', '.ex', '.clj', '.hs', '.s', '.asm', '.ps1', '.groovy',
-    '.f', '.f90', '.lisp', '.lsp', '.fs', '.ml', '.jl', '.env', '.json5', '.toml', '.xml', '.ini'
-]
+    '.f', '.f90', '.lisp', '.lsp', '.fs', '.ml', '.jl', '.env', '.json5', '.toml', '.xml', '.ini', '.dart'
+]# add .dart
 
 # Default excluded directories
-DEFAULT_EXCLUDE_DIRS = {'.git', 'node_modules', '__pycache__', 'dist'}
+DEFAULT_EXCLUDE_DIRS = {'.git', 'node_modules', '__pycache__', 'dist', 'venv'} # add venv
 
 # Supported output formats
 OUTPUT_FORMATS = ['markdown', 'json', 'text']
@@ -526,10 +528,18 @@ def export_to_pdf(output_file: str, markdown_file: str):
     except Exception as e:
         logger.error(f"Failed to export PDF: {e}")
 
+# Function to select a directory using a GUI dialog
+def select_directory(title="Select a Directory") -> Optional[str]:
+    """Open a dialog to select a directory and return the path."""
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    directory = filedialog.askdirectory(title=title)
+    return directory if directory else None
+
 def main():
     """Main function to parse arguments, load configurations, and initiate code collection."""
     parser = argparse.ArgumentParser(description="Comprehensive Code Collector CLI Tool")
-    parser.add_argument('directory', help='Path of the folder to traverse')
+    parser.add_argument('directory', nargs='?', help='Path of the folder to traverse (leave empty for GUI folder selection)')
     parser.add_argument('-o', '--output', default='collected_code', help='Output file name without extension')
     parser.add_argument('--config', help='Path to configuration file (YAML or JSON)')
     parser.add_argument('--include-extensions', help='Comma-separated list of extensions to include (overrides config)')
@@ -558,6 +568,17 @@ def main():
     # Set logging level
     if args.verbose:
         logger.setLevel(logging.DEBUG)
+
+    # Use GUI for directory selection if directory argument is not provided
+    if not args.directory:
+        logger.info("No directory specified. Opening GUI folder selection dialog...")
+        selected_directory = select_directory()
+        if not selected_directory:
+            logger.error("No directory selected. Exiting.")
+            return
+        root_dir = Path(selected_directory)
+    else:
+        root_dir = Path(args.directory)
 
     # Load configuration
     config = {}
@@ -607,8 +628,6 @@ def main():
         else:
             logger.error("Exiting due to repository cloning failure.")
             return
-    else:
-        root_dir = Path(args.directory)
 
     # Validate directory
     if not root_dir.is_dir():
